@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+    <body
+        style="
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            padding: 20px;
+        "
+    >
+        <div style="background-color: #fff; border-radius: 10px; padding: 20px">
+            <p style="font-size: 16px">Dear {{ name }},</p>
+
+            <p style="font-size: 16px">
+                Thank you for registering with Akansie! To complete the
+                registration process and verify your email address, please
+                follow the instructions below:
+            </p>
+
+            <p style="font-size: 16px">
+                Click on the following link to verify your email address:
+            </p>
+
+            <p style="font-size: 16px">
+                <a
+                    href="{{ url }}"
+                    style="color: #007bff; text-decoration: none"
+                    >Verification Link</a
+                >
+            </p>
+
+            <p style="font-size: 16px">
+                If clicking the link doesn't work, copy and paste the entire URL
+                into your browser's address bar.
+            </p>
+
+            <p style="font-size: 16px">
+                Once you've verified your email address, you'll be able to
+                access all the features of our application.
+            </p>
+
+            <p style="font-size: 16px">
+                If you didn't register with Akansie, please ignore this email.
+            </p>
+
+            <p style="font-size: 16px">
+                Thank you,<br />
+                The Akansie Team
+            </p>
+        </div>
+    </body>
+</html>
