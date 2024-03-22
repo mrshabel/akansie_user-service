@@ -1,4 +1,6 @@
-export class AppError extends Error {
+import { AppErrorType } from "../types/error";
+
+export class AppError extends Error implements AppErrorType {
     public statusCode: number;
     public isOperational: boolean;
 

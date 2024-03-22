@@ -6,8 +6,6 @@ const userSchema = new mongoose.Schema({
     isVerified: { type: Boolean, default: false },
     firstName: String,
     lastName: String,
-    dateOfBirth: Date,
-    profilePhoto: String,
     verificationToken: { type: String, select: false },
     verificationTokenExpiry: { type: Date, select: false },
     passwordResetToken: { type: String, select: false },

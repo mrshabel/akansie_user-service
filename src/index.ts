@@ -1,3 +1,4 @@
+import "module-alias"
 import express, { Express, NextFunction, Request, Response } from "express";
 import { configDotenv } from "dotenv";
 import cors from "cors";
@@ -6,10 +7,10 @@ import helmet from "helmet";
 import mongoSanitize from "express-mongo-sanitize";
 import xss from "helmet";
 import morgan from "morgan";
-import globalError from "./middlewares/error";
+import globalError from "./middlewares/error.middleware";
 import { AppError } from "./utils/appError";
 import { connectDb } from "./utils/config";
-import authRoutes from "./routes/authRoute";
+import authRoutes from "./routes/auth.route";
 
 // read environment variables
 configDotenv({
@@ -41,14 +42,15 @@ app.use(express.json({ limit: "10kb" }));
 // sanitize against db attacks
 app.use(mongoSanitize());
 app.use(xss());
+
 // route definition here
 app.use("/api/v1/auth", authRoutes);
-
 // test endpoint
 app.get("/", (req, res) => {
     res.send("User Service is online");
 });
 
+// error middleware
 app.use(globalError);
 
 app.all("*", (req: Request, res: Response, next: NextFunction) => {

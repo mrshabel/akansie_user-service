@@ -8,8 +8,12 @@ import {
 import catchAsync from "../utils/catchAsync";
 import { Request, Response, NextFunction, CookieOptions } from "express";
 import { AppError } from "../utils/appError";
-import User from "../models/userModel";
-import { createHash, createRandomToken, createToken } from "../utils/auth";
+import User from "../models/user.model";
+import {
+    createHash,
+    createRandomToken,
+    createToken,
+} from "../utils/auth.utils";
 import { Email } from "../utils/email";
 
 // sign up

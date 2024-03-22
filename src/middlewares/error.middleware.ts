@@ -1,6 +1,7 @@
-const { AppError } = require("../utils/appError");
+import { AppError } from "../utils/appError";
 import { Request, Response, NextFunction } from "express";
 import { CastError, MongooseError } from "mongoose";
+import { AppErrorType } from "../types/error";
 
 // database exceptions
 //handling invalid database field input
@@ -16,7 +17,7 @@ const handleDuplicateFieldsError = (error: MongooseError) => {
 };
 
 const handleDevelopmentError = (
-    error: typeof AppError,
+    error: AppErrorType,
     req: Request,
     res: Response
 ) => {
@@ -30,7 +31,7 @@ const handleDevelopmentError = (
 };
 
 const handleProductionError = (
-    error: typeof AppError,
+    error: AppErrorType,
     req: Request,
     res: Response
 ) => {
@@ -42,7 +43,7 @@ const handleProductionError = (
 };
 
 const globalError = (
-    error: typeof AppError | Error,
+    error: any, // error can either be caught or uncaught
     req: Request,
     res: Response,
     next: NextFunction
@@ -50,9 +51,13 @@ const globalError = (
     error.message = error.message || "Something went wrong";
     error.statusCode = error.statusCode || 500;
 
+    // handle error in dev environment
     if (process.env.NODE_ENV === "development") {
         handleDevelopmentError(error, req, res);
-    } else if (process.env.NODE_ENV === "production") {
+    }
+
+    // handle error in production environment
+    else if (process.env.NODE_ENV === "production") {
         if (error.name === "CastError") error = handleCastError(error);
         if (error.code === 11000) error = handleDuplicateFieldsError(error);
         handleProductionError(error, req, res);
