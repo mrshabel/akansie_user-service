@@ -1,5 +1,54 @@
 import * as z from "zod";
 
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     AuthSignup:
+ *       type: object
+ *       required:
+ *         - email
+ *         - password
+ *         - firstName
+ *         - lastName
+ *       properties:
+ *         email:
+ *           type: string
+ *         password:
+ *           type: string
+ *           minLength: 8
+ *         firstName:
+ *           type: string
+ *         lastName:
+ *           type: string
+ *
+ *     AuthLoginResponse:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *         email:
+ *           type: string
+ *         firstName:
+ *           type: string
+ *         lastName:
+ *           type: string
+ *         isVerified:
+ *           type: boolean
+ *
+ *     AuthLogin:
+ *       type: object
+ *       required:
+ *         - email
+ *         - password
+ *       properties:
+ *         email:
+ *           type: string
+ *         password:
+ *           type: string
+ *           minLength: 8
+ */
+
 export const authSignupSchema = z.object({
     firstName: z.string({ required_error: "First Name is required" }),
     lastName: z.string({ required_error: "Last Name is required" }),

@@ -1,6 +1,10 @@
-import "module-alias"
-import express, { Express, NextFunction, Request, Response } from "express";
 import { configDotenv } from "dotenv";
+// read environment variables
+configDotenv({
+    path: `.env.${process.env.NODE_ENV === "production" ? "prod" : "local"}`,
+});
+
+import express, { Express, NextFunction, Request, Response } from "express";
 import cors from "cors";
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
@@ -10,12 +14,11 @@ import morgan from "morgan";
 import globalError from "./middlewares/error.middleware";
 import { AppError } from "./utils/appError";
 import { connectDb } from "./utils/config";
+import { openApiSpecification } from "./docs/swagger";
+import swaggerUi from "swagger-ui-express";
 import authRoutes from "./routes/auth.route";
+import heathCheckRoute from "./routes/health.route";
 
-// read environment variables
-configDotenv({
-    path: `.env.${process.env.NODE_ENV === "production" ? "prod" : "local"}`,
-});
 connectDb();
 const port = process.env.PORT;
 
@@ -44,11 +47,11 @@ app.use(mongoSanitize());
 app.use(xss());
 
 // route definition here
-app.use("/api/v1/auth", authRoutes);
-// test endpoint
-app.get("/", (req, res) => {
-    res.send("User Service is online");
-});
+app.use("/api/v1", heathCheckRoute);
+app.use("/api/v1", authRoutes);
+
+// api docs
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(openApiSpecification));
 
 // error middleware
 app.use(globalError);

@@ -1,11 +1,11 @@
 import bcrypt from "bcrypt";
-import { authSignupSchema } from "../../utils/validations/auth";
+import { authSignupSchema } from "../../schemas/auth.schema";
 import catchAsync from "../../utils/catchAsync";
 import { Request, Response, NextFunction, CookieOptions } from "express";
 import { AppError } from "../../utils/appError";
 import User from "../../models/user.model";
 import { createRandomToken } from "../../utils/auth.utils";
-import { Email } from "../../utils/email";
+import { Email } from "../../services/email/email";
 
 export const signup = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
@@ -50,7 +50,7 @@ export const signup = catchAsync(
             // save modified document
             await user.save();
             console.log(error);
-            return next(new AppError("An error occurred.", 500));
+            return next(new AppError("Something went wromg", 500));
         }
     }
 );

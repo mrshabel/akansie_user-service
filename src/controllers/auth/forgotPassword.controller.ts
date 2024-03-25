@@ -1,10 +1,10 @@
-import { authForgotPasswordSchema } from "../../utils/validations/auth";
+import { authForgotPasswordSchema } from "../../schemas/auth.schema";
 import catchAsync from "../../utils/catchAsync";
 import { Request, Response, NextFunction, CookieOptions } from "express";
 import { AppError } from "../../utils/appError";
 import User from "../../models/user.model";
 import { createRandomToken } from "../../utils/auth.utils";
-import { Email } from "../../utils/email";
+import { Email } from "../../services/email/email";
 
 export const forgotPassword = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {

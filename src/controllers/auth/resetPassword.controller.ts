@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import { authPasswordResetSchema } from "../../utils/validations/auth";
+import { authPasswordResetSchema } from "../../schemas/auth.schema";
 import catchAsync from "../../utils/catchAsync";
 import { Request, Response, NextFunction } from "express";
 import { AppError } from "../../utils/appError";

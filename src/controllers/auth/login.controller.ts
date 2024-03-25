@@ -1,10 +1,14 @@
 import bcrypt from "bcrypt";
-import { authLoginSchema } from "../../utils/validations/auth";
+import { authLoginSchema } from "../../schemas/auth.schema";
 import catchAsync from "../../utils/catchAsync";
 import { Request, Response, NextFunction, CookieOptions } from "express";
 import { AppError } from "../../utils/appError";
 import User from "../../models/user.model";
-import { createToken } from "../../utils/auth.utils";
+import {
+    createAccessToken,
+    createHash,
+    createRefreshToken,
+} from "../../utils/auth.utils";
 
 export const login = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
@@ -22,23 +26,43 @@ export const login = catchAsync(
         ) {
             return next(new AppError("Invalid email or password", 400));
         }
+        // remove password from response body
+        const { password, ...body } = user.toObject();
+
+        // send both access and refresh token to user then validate on request
+        const accessToken = createAccessToken(user._id);
+        const refreshToken = createRefreshToken(user._id);
+
+        // hash refresh token and save to database
+        const hashedRefreshToken = createHash(refreshToken);
+
+        const refreshTokenExpiry = parseInt(
+            (process.env.REFRESH_TOKEN_EXPIRES_IN || "1d").split("")[0]
+        );
+        user.refreshToken = hashedRefreshToken;
+        user.refreshTokenExpiry = new Date(
+            Date.now() + refreshTokenExpiry * 24 * 60 * 60 * 1000
+        );
+
+        await user.save();
+
         // create cookie
+        const accessTokenExpiry = parseInt(
+            (process.env.ACCESS_TOKEN_EXPIRES_IN || "0h").split("")[0]
+        );
         const cookieOptions: CookieOptions = {
-            expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
+            expires: new Date(Date.now() + accessTokenExpiry * 60 * 60 * 1000),
             httpOnly: true,
         };
         if (process.env.NODE_ENV === "production") {
             cookieOptions.secure = true;
         }
 
-        const token = createToken(user._id);
-
         // set cookie
-        res.cookie("jwt", token, cookieOptions);
-        const userObject = user.toObject();
-        const { password, ...body } = userObject;
-        return res
-            .status(200)
-            .json({ data: { token, user: body }, message: "Login successful" });
+        res.cookie("jwt", accessToken, cookieOptions);
+        return res.status(200).json({
+            data: { accessToken, refreshToken, user: body },
+            message: "Login successful",
+        });
     }
 );
