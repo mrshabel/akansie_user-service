@@ -17,11 +17,6 @@ const options = {
                 },
             },
         },
-        // security: [
-        //     {
-        //         bearerAuth: [],
-        //     },
-        // ],
         servers: [{ url: `${process.env.BASE_URL}/api/v1` }],
     },
     apis: ["./src/routes/*.ts", "./src/schemas/*.ts"],

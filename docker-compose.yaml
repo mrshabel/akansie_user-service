@@ -1,0 +1,11 @@
+version: "3.9"
+
+services:
+    user_service:
+        build: .
+        image: auth_v1
+        restart: always
+        env_file:
+            - .env.local
+        ports:
+            - 8000:8000

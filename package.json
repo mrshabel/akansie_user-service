@@ -6,7 +6,8 @@
     "scripts": {
         "start": "node dist/index.js",
         "dev": "nodemon src/index.ts",
-        "build": "rm -rf ./dist && tsc",
+        "build": "npx tsc",
+        "docs": "node src/docs/swagger.ts",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "author": "Shabel Gumah",
